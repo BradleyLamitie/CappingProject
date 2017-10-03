@@ -1,0 +1,25 @@
+--Given a referred person's first name, lists some basic info about them--
+
+CREATE OR REPLACE FUNCTION basicinfo(text, refcursor)
+RETURNS refcursor AS '
+DECLARE
+	Firstname VARCHAR :=$1;
+	Resultset refcursor :=$2;
+BEGIN
+open resultset FOR
+
+SELECT Ref_F_Name, Ref_L_Name, Ref_Street, Ref_City, Ref_State, Ref_Zip, Ref_Cell_Phone
+FROM Referrals
+WHERE Firstname = Ref_F_Name;
+
+RETURN resultset;
+
+END;
+'
+LANGUAGE plpgsql
+
+
+--In order to fetch the info, you need to write a query with the parameter(s) you do so like this:--
+
+SELECT basicinfo('John', 'results');
+FETCH ALL FROM results;
